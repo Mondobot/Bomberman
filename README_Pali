@@ -1,0 +1,40 @@
+
+	Iti scriu aici o lista de comenzi (un fel de cheatsheet)
+ca sa ai de unde pleca. Daca ai probleme nu ezita sa cauti
+pe net
+
+* Vrei sa iti tragi un repo nou:
+	- git clone *url de pe github*
+	
+	ex.: git clone https://github.com/Mondobot/Bomberman.git
+
+* Ca sa tragi ultimele modificari din upstream:
+	- git pull
+
+* Ca sa pui ultimele modificari (commituri) in upstream
+	- git push
+
+* Ca sa vezi ce fisiere ai modificat fata de ultima versiune
+pe care ai luat-o de pe upstream
+	- git status
+
+* Ca sa adaugi fisiere noi pentru a fi incluse in commit-ul
+curent
+	- git add *path_to_files* (pathul il vezi din status)
+
+* Ca sa faci un commit *local*
+	- git commit -m "your commit message"
+
+	-> Incearca sa faci commit cat mai des (dar doar cand e
+	cazul)
+	-> Mesajul ar fi bine sa fie relevant la schimbarile aduse
+	(eu daca nu stiu ce ai facut ar trebui sa pot cauta prin
+	mesaje si sa vad din descriere lor *scurta* ce ai facut)
+	-> commitul este *local*  ca sa il trimiti upstream
+	fa un *git push*
+
+* Daca vrei sa restez un fisier la ultima versiune commituita
+	- git checkout *path_to_file*
+
+* Daca ai conflicte la pull:
+	- TODO
