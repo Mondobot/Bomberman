@@ -38,3 +38,11 @@ curent
 
 * Daca ai conflicte la pull:
 	- TODO
+
+
+* Basic workflow:
+	-> git status				// Ca sa vezi ce vrei sa
+							adaugi la commitul curent
+	-> git add file			// Adaugi ce fisiere vrei
+	-> git commit -m ""			// Faci commitul
+	-> fie continui sa lucrezi fie faci un git push
