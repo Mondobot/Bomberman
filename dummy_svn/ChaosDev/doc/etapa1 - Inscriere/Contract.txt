@@ -1,0 +1,30 @@
+							Contract
+
+Membrii:
+	* Cristea Paul 		334CA
+	* Palianos Cristian 	334CA
+	* Ciocan Mihai 		334CA
+	* Pavaluca Matei		334CA
+
+Indrumator:
+	* Anca Morar
+
+Scurta descriere:
+	Prezentul document contine detalii generale despre proiectul nostru la
+Ingineria Programarii.
+
+	In cadrul proiectului vrem sa implementam un joc multiplayer ce
+foloseste o structura client - server asemanatoare cu cea din jocurile 
+de tip MMO (majoritatea calculelor sunt facute de server).
+
+	Clientul si serverul vor fi scrise cel mai probabil in limbaje
+diferite, pentru a profita cat mai mult de avantajele fiecaruia.
+
+	Am dori sa avem suport pentru multiplayer intre 2 - 8 oameni
+(valorile sunt orientative, depinde foarte mult de implementarea efectiva),
+cu diverse feature-uri (achievement-uri, sistem de prieteni etc) care vor fi
+stabilite pe masura ce implementam.
+
+	Jocul va fi cel mai probabil 2D, iar asupra subiectului
+nu ne-am pus inca de acord.
+

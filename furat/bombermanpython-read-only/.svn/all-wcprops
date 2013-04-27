@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 22
+/svn/!svn/ver/44/trunk
+END
+world.py
+K 25
+svn:wc:ra_dav:version-url
+V 31
+/svn/!svn/ver/44/trunk/world.py
+END
+player.py
+K 25
+svn:wc:ra_dav:version-url
+V 32
+/svn/!svn/ver/44/trunk/player.py
+END
+map.py
+K 25
+svn:wc:ra_dav:version-url
+V 29
+/svn/!svn/ver/43/trunk/map.py
+END
+bomb.py
+K 25
+svn:wc:ra_dav:version-url
+V 30
+/svn/!svn/ver/43/trunk/bomb.py
+END
+main.py
+K 25
+svn:wc:ra_dav:version-url
+V 30
+/svn/!svn/ver/44/trunk/main.py
+END
