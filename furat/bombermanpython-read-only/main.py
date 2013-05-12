@@ -1,5 +1,3 @@
-#! /usr/bin/env python
-
 # Bomberman game
 # Author: Bruna Xavier
 # Creation date: 04-30-2011
@@ -7,7 +5,7 @@
 import pygame
 from world import PygameWorld
 
-FPS     =   40
+FPS     =   15
 WIDTH   =   512
 HEIGHT  =   512
 BLACK   =   (0, 0, 0)
