@@ -5,65 +5,78 @@ from pgu import gui
 import state
 
 class CustomDialog(gui.Dialog):
+	"""
+		Pop-up dialog with custom title and message
+		We might need to move it from here
+	"""
 	def __init__(this, title, msg):
 		title_label = gui.Label(title)
 		msg_label = gui.Label(msg)
 
 		gui.Dialog.__init__(this, title_label, msg_label)
 
-
-class LoginScreen(gui.Table):
-	""" Class that holds the login screen as a table
-		currently it has a wallpaper, a logo and
-		a login area 
+class LoginScreen(gui.App):
+	"""
+		Class that holds the login screen as an app.
+		Currently it has a wallpaper, a logo and
+		a login area
 	"""
 
 	def __init__(self, state, screen, **params):
+		# Init the app and connect the quit action
+		gui.App.__init__(self)
+		self.connect(gui.QUIT, self.quit, None)
+
+		# Init the inner variables
 		self.width = params.get("width", 0)
 		self.height = params.get("height", 0)
 		self.state = state
 		self.screen = screen
+		self.table = gui.Table(**params)
 
-		gui.Table.__init__(self, **params)
-		
+		# Add object to the table and finish initializing the app
 		self._fill()
+		self.init(self.table, self.screen)
 
+	"""
+		Handles the login procedures
+		Later this should call the networking module
+	"""
 	def _login(self):
 		user = self.user.value;
 		passwd = self.passwd.value;
 
+		# plain silly, we need to remove this
 		if user == "gigel" and passwd == "mamaliga":
 			self.state.logged_in = True
 			print "trece"
 
+		# If the login was incorrect prompt the user
 		CustomDialog("Error", "Invalid username or password").open()
 
 
+	"""
+		Adds object to the wallpaper area
+	"""
 	def _fillWallpaper(self):
-		w_ratio = 0.6
-		h_ratio = 1
-		wall_w = int(self.width * w_ratio)
-		wall_h = int(self.height * h_ratio)
+		wall_width = int(self.width * 0.6)
+		wall_height = int(self.height * 1)
 
-		print wall_h, wall_w
+		self.table.tr()
+		wall = gui.Image("images/Wallpaper.png", width = wall_width, height = wall_height)
+		self.table.td(wall, width = wall_width, height = wall_height)
 
-		self.tr()
-		wall = gui.Image("Wallpaper.png", width = wall_w, height = wall_h)
-		self.td(wall, width = wall_w, height = wall_h)
-
+	"""
+		Adds objects to the login area
+	"""
 	def _fillLoginArea(self):
 		area_width = int(self.width * 0.4)
 		area_height = int(self.height * 1)
 
-#		bb = gui.Table(width = area_width, height = area_height)
-#		bck = gui.Image("abstract_0097.jpg", width = area_width, height = area_height)
-#		bb.td(bck, width = area_width, height = area_height)
-
 		login_area = gui.Table(width = area_width, height = area_height)
+
 		login_area.tr()
-
-		img = gui.Image("Bomberman_logo.png", width = area_width, height = int(area_height * 0.3))
-
+		img = gui.Image("images/Bomberman_logo.png", width = area_width, height = int(area_height * 0.3))
 		login_area.td(img, width = area_width, height = int(area_height * 0.3))
 
 		login_area.tr()
@@ -84,31 +97,29 @@ class LoginScreen(gui.Table):
 		login_btn = gui.Button("Login")
 		login_btn.connect(gui.CLICK, self._login)
 		login_area.td(login_btn, width = area_width, height = 30)
+
 		login_area.tr()
 		sp_h = int(self.height * 0.7) - 150
 		login_area.td(gui.Spacer(area_width, sp_h), width = area_width, height = sp_h)
 
-		self.td(login_area, width = area_width, height = area_height)
+		self.table.td(login_area, width = area_width, height = area_height)
 
+	"""
+		Wrapper for the functions that fill the table with objects.
+		Also inits the background
+	"""
 	def _fill(self):
-		self.bg = pygame.image.load("abstract_0097.jpg")
+		self.bg = pygame.image.load("images/abstract_0097.jpg")
 		self.bg_rect = self.bg.get_rect()
-		#screen.blit(background, bg_rect)
 
 		self._fillWallpaper()
 		self._fillLoginArea()
 
-
+	"""
+		Override the paint function so it displays the background first.
+		It'a basically a hack because widgets have backgrounds, but I
+		can't seem to understand how to use them. Oh well :)
+	"""
 	def paint(self, s):
 		self.screen.blit(self.bg, self.bg_rect)
 		super(LoginScreen, self).paint(s)
-
-"""
-screen = pygame.display.set_mode((800, 600))
-
-app = gui.App(width = 800, height = 600)
-app.connect(gui.QUIT, app.quit, None)
-
-login_screen = LoginScreen(width = 800, height = 600)
-app.run(login_screen)
-"""

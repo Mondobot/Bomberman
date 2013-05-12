@@ -4,9 +4,9 @@
 
 import pygame
 from world import PygameWorld
-from pgu_serious import LoginScreen
+from login_screen import LoginScreen
 from pgu import gui
-import state
+from state import State
 
 FPS     =   40
 WIDTH   =   800
@@ -24,17 +24,18 @@ clock = pygame.time.Clock()
 
 done = False
 
-statea = state.State()
+statea = State()
 
 world = PygameWorld(screen)
-login_screen = gui.App(width = WIDTH, height = HEIGHT)
-login_screen.connect(gui.QUIT, login_screen.quit, None)
-login_screen.init(LoginScreen(statea, screen, width = WIDTH, height = HEIGHT), screen)
+#login_screen = gui.App(width = WIDTH, height = HEIGHT)
+#login_screen.connect(gui.QUIT, login_screen.quit, None)
+#login_screen.init(LoginScreen(statea, screen, width = WIDTH, height = HEIGHT), screen)
+login_screen = LoginScreen(statea, screen, width = WIDTH, height = HEIGHT)
 
 #login_screen.run(LoginScreen(statea, screen, width = WIDTH, height = HEIGHT))
 
 # -------- Main Program Loop -----------
-while world.player.is_alive():
+while world.player.is_alive() and not done:
     for event in pygame.event.get(): # User did something
         if event.type == pygame.QUIT: # If user clicked close
             done = True # Flag that we are done so we exit this loop
