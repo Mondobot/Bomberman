@@ -4,10 +4,13 @@
 
 import pygame
 from world import PygameWorld
+from pgu_serious import LoginScreen
+from pgu import gui
+import state
 
-FPS     =   15
-WIDTH   =   512
-HEIGHT  =   512
+FPS     =   40
+WIDTH   =   800
+HEIGHT  =   600
 BLACK   =   (0, 0, 0)
 GREY    =   (132, 130, 132)
 
@@ -21,7 +24,14 @@ clock = pygame.time.Clock()
 
 done = False
 
+statea = state.State()
+
 world = PygameWorld(screen)
+login_screen = gui.App(width = WIDTH, height = HEIGHT)
+login_screen.connect(gui.QUIT, login_screen.quit, None)
+login_screen.init(LoginScreen(statea, screen, width = WIDTH, height = HEIGHT), screen)
+
+#login_screen.run(LoginScreen(statea, screen, width = WIDTH, height = HEIGHT))
 
 # -------- Main Program Loop -----------
 while world.player.is_alive():
@@ -39,16 +49,24 @@ while world.player.is_alive():
                 world.player.change_direction(world.player.LEFT)
             elif event.key == pygame.K_b:
                 world.place_bomb()
+
+        else:
+            login_screen.event(event)
                 
     # make things happen
-    world.run()
+    if statea.logged_in == True:
+        world.run()
     
     # Set the screen background
-    screen.fill( GREY )
+        screen.fill( GREY )
     
     # draw world
-    world.draw()
+        world.draw()
     
+
+    else:
+        login_screen.update()
+        
     # Limit to 20 frames per second
     clock.tick( FPS )
  
