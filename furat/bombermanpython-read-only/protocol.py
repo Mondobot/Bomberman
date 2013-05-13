@@ -1,4 +1,5 @@
 import network
+
 NONE = "-1"
 LOGIN = "0"
 CREATE = "1"

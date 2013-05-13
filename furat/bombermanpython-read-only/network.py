@@ -63,7 +63,7 @@ class _NetworkModule():
 	"""
 	def send(self, message):
 		print("hello")
-		self.gate.sendall(message)
+		self.gate.sendall(message + "\n")
 
 	"""
 		Dummy recv function // We should have a select here //
