@@ -16,7 +16,7 @@ class _NetworkModule():
 		the error accordingly
 	"""
 	def connect(self):
-		self.connected = True
+		self.status = True
 		self.error = ["", ""]
 
 		try:
@@ -32,6 +32,7 @@ class _NetworkModule():
 			self.gate.connect((self.sv_ip, self.sv_port))
 
 		except socket.error, msg:
+			print "eroare"
 			self.error = msg
 			self.status = False
 			self._printError()
@@ -75,6 +76,7 @@ class _NetworkModule():
 			print "cannot recv"
 			return ""
 
+		print reply
 		return reply
 
 	def recv_select(self):

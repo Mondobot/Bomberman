@@ -54,12 +54,10 @@ class LoginScreen(gui.App):
 
 		# plain silly, we need to remove this
 		if network.isConnected():
-
-			ans = protocol.sendMessage(TYPE = protocols.LOGIN, USER = user, PASS = passwd)
+			ans = protocol.sendMessage(TYPE = protocol.LOGIN, USER = user, PASS = passwd)
 
 			if ans == True:
 				self.state.logged_in = True
-				print "trece"
 				return
 
 			else:
