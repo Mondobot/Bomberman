@@ -1,7 +1,10 @@
-# Bomberman game
-# Author: Bruna Xavier
-# Creation date: 04-30-2011
+#! /usr/bin/env python
 
+"""
+ Bomberman game
+ Author: Bruna Xavier
+ Creation date: 04-30-2011
+"""
 import pygame
 from world import PygameWorld
 from login_screen import LoginScreen
@@ -13,6 +16,7 @@ WIDTH   =   800
 HEIGHT  =   600
 BLACK   =   (0, 0, 0)
 GREY    =   (132, 130, 132)
+
 
 pygame.init()
 

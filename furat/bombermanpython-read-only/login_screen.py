@@ -3,6 +3,7 @@
 import pygame
 from pgu import gui
 import state
+import network
 
 class CustomDialog(gui.Dialog):
 	"""
@@ -25,6 +26,7 @@ class LoginScreen(gui.App):
 	def __init__(self, state, screen, **params):
 		# Init the app and connect the quit action
 		gui.App.__init__(self)
+
 		self.connect(gui.QUIT, self.quit, None)
 
 		# Init the inner variables
@@ -46,14 +48,25 @@ class LoginScreen(gui.App):
 		user = self.user.value;
 		passwd = self.passwd.value;
 
-		# plain silly, we need to remove this
-		if user == "gigel" and passwd == "mamaliga":
-			self.state.logged_in = True
-			print "trece"
+		if not network.isConnected():
+			network.connect()
+
+		if not network.isConnected():
+			title, err_msg = network.getError()
+
+		else:
+			# plain silly, we need to remove this
+			if user == "gigel" and network.isConnected():
+				self.state.logged_in = True
+				print "trece"
+				return
+
+			else:
+				title = "Error"
+				err_msg = "Invalid username or password"
 
 		# If the login was incorrect prompt the user
-		CustomDialog("Error", "Invalid username or password").open()
-
+		CustomDialog(title, err_msg).open()
 
 	"""
 		Adds object to the wallpaper area
