@@ -4,6 +4,7 @@ import pygame
 from pgu import gui
 import state
 import network
+import protocol
 
 class CustomDialog(gui.Dialog):
 	"""
@@ -51,12 +52,12 @@ class LoginScreen(gui.App):
 		if not network.isConnected():
 			network.connect()
 
-		if not network.isConnected():
-			title, err_msg = network.getError()
+		# plain silly, we need to remove this
+		if network.isConnected():
 
-		else:
-			# plain silly, we need to remove this
-			if user == "gigel" and network.isConnected():
+			ans = protocol.sendMessage(TYPE = protocols.LOGIN, USER = user, PASS = passwd)
+
+			if ans == True:
 				self.state.logged_in = True
 				print "trece"
 				return
@@ -64,6 +65,9 @@ class LoginScreen(gui.App):
 			else:
 				title = "Error"
 				err_msg = "Invalid username or password"
+
+		else:
+			title, err_msg = network.getError()
 
 		# If the login was incorrect prompt the user
 		CustomDialog(title, err_msg).open()

@@ -77,6 +77,9 @@ class _NetworkModule():
 
 		return reply
 
+	def recv_select(self):
+		pass
+
 """
 This whole class is a singleton
 """
@@ -87,3 +90,4 @@ isConnected = _inst.isConnected
 connect = _inst.connect
 send = _inst.send
 recv = _inst.recv
+select = _inst.recv_select
