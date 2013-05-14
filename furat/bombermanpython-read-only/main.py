@@ -39,19 +39,19 @@ login_screen = LoginScreen(statea, screen, width = WIDTH, height = HEIGHT)
 #login_screen.run(LoginScreen(statea, screen, width = WIDTH, height = HEIGHT))
 
 # -------- Main Program Loop -----------
-while world.player.is_alive() and not done:
+while world.players[0].is_alive() and not done:
     for event in pygame.event.get(): # User did something
         if event.type == pygame.QUIT: # If user clicked close
             done = True # Flag that we are done so we exit this loop
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_UP:
-                world.player.change_direction(world.player.NORTH)
+                world.players[0].change_direction(world.players[0].NORTH)
             elif event.key == pygame.K_DOWN:
-                world.player.change_direction(world.player.SOUTH)
+                world.players[0].change_direction(world.players[0].SOUTH)
             elif event.key == pygame.K_RIGHT:
-                world.player.change_direction(world.player.RIGHT)
+                world.players[0].change_direction(world.players[0].RIGHT)
             elif event.key == pygame.K_LEFT:
-                world.player.change_direction(world.player.LEFT)
+                world.players[0].change_direction(world.players[0].LEFT)
             elif event.key == pygame.K_b:
                 world.place_bomb()
 
@@ -59,7 +59,7 @@ while world.player.is_alive() and not done:
             login_screen.event(event)
                 
     # make things happen
-    if statea.logged_in == True:
+    if statea.logged_in == False:
         world.run()
     
     # Set the screen background
