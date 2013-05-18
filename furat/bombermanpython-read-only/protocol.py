@@ -29,10 +29,12 @@ class _ProtocolsModule():
 		elif msg_type == JOIN:
 			self._sendJoin()
 
-#		elif msg_type == MOVE:
-#			self._sendMove()
+		elif msg_type == MOVE:
+			new_dir = params.get("DIR", 0)
+			self._sendMove(new_dir)
 
-		#elif 
+		elif msg_type == DROP:
+			self._sendDrop()
 
 		else:
 			print "ce plm de mesaj e " + msg_type
@@ -145,6 +147,12 @@ class _ProtocolsModule():
 			return False
 
 		return True
+
+	def _sendMove(self, direction):
+		network.send(MOVE + direction)
+
+	def _sendDrop(self):
+		network.send(DROP)
 
 _inst = _ProtocolsModule()
 
