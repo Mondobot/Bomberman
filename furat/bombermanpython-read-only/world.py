@@ -56,7 +56,7 @@ class PygameWorld(World):
 
         self.me = me
 
-    def setPlayers(self, me, pos = []):
+    def setPlayers(self, me, pos):
         if pos == []:
             return
 

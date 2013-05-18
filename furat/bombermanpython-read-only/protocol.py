@@ -29,6 +29,11 @@ class _ProtocolsModule():
 		elif msg_type == JOIN:
 			self._sendJoin()
 
+#		elif msg_type == MOVE:
+#			self._sendMove()
+
+		#elif 
+
 		else:
 			print "ce plm de mesaj e " + msg_type
 
@@ -40,7 +45,6 @@ class _ProtocolsModule():
 			return ""
 
 		message = network.mySelect()
-		print message
 
 		if message == "":
 			return
@@ -48,7 +52,6 @@ class _ProtocolsModule():
 		msg_type = message[0]
 
 		if msg_type == MAP:
-			print "intra pe MAP"
 			self._handleMapRecv(message[1:], world)
 
 
@@ -87,8 +90,11 @@ class _ProtocolsModule():
 		aux = map(ord, codedMap[head : head + no_clients * 2])
 		players_pos = []
 
-		for i in range(0, len(players_pos), 2):
+		for i in range(0, no_clients, 2):
+			print "ceva"
 			players_pos += [(aux[i], aux[i + 1])]
+
+		print "apelez"
 		world.setPlayers(client_id, players_pos)
 
 		# Populate the bombs
