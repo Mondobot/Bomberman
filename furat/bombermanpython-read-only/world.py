@@ -57,6 +57,8 @@ class PygameWorld(World):
         self.me = me
 
     def setPlayers(self, me, pos):
+        
+        print "self_pos ", me
         if pos == []:
             return
 
@@ -72,7 +74,6 @@ class PygameWorld(World):
 
     def run(self):
         #if self.__player_can_walk():
-        protocol.recvMessage(self)
 
         for player in self.players:
             player.walk()

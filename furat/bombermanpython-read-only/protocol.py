@@ -1,4 +1,5 @@
 import network
+import state
 NONE = "-1"
 LOGIN = "0"
 CREATE = "1"
@@ -55,6 +56,10 @@ class _ProtocolsModule():
 
 		if msg_type == MAP:
 			self._handleMapRecv(message[1:], world)
+
+		elif msg_type == START:
+			print "Primesc start"
+			state.in_game = True
 
 
 	def _handleLogin(self, **params):
@@ -132,6 +137,9 @@ class _ProtocolsModule():
 		network.send(START)
 		if not self._getAck(START):
 			print "PLM, NU MERGE START"
+
+		else:
+			state.in_game = True
 
 	def _sendCreate(self):
 		network.send(CREATE)
