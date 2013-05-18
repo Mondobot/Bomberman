@@ -57,7 +57,7 @@ login_screen = LoginScreen(statea, screen, width = WIDTH, height = HEIGHT)
 # -------- Main Program Loop -----------
 network.connect()
 protocol.sendMessage(TYPE = CREATE)
-#time.sleep(5)
+time.sleep(3)
 protocol.sendMessage(TYPE = START)
 
 while not done:
@@ -65,23 +65,24 @@ while not done:
         if event.type == pygame.QUIT: # If user clicked close
             done = True # Flag that we are done so we exit this loop
 
-        elif event.type == pygame.KEYUP and not world.players[world.me].walking:
-            if event.key == pygame.K_UP:
-                protocol.sendMessage(TYPE = MOVE, DIR = NORTH)
-            elif event.key == pygame.K_DOWN:
-                 protocol.sendMessage(TYPE = MOVE, DIR = SOUTH)
-            elif event.key == pygame.K_RIGHT:
-                 protocol.sendMessage(TYPE = MOVE, DIR = EAST)
-            elif event.key == pygame.K_LEFT:
-                protocol.sendMessage(TYPE = MOVE, DIR = WEST)
-            elif event.key == pygame.K_b:
-                protocol.sendMessage(TYPE = DROP)
+        if statea.in_game and event.type == pygame.KEYUP:
+            if world.players[world.me].walking:
+                 if event.key == pygame.K_UP:
+                    protocol.sendMessage(TYPE = MOVE, DIR = NORTH)
+                 elif event.key == pygame.K_DOWN:
+                    protocol.sendMessage(TYPE = MOVE, DIR = SOUTH)
+                 elif event.key == pygame.K_RIGHT:
+                    protocol.sendMessage(TYPE = MOVE, DIR = EAST)
+                 elif event.key == pygame.K_LEFT:
+                    protocol.sendMessage(TYPE = MOVE, DIR = WEST)
+                 elif event.key == pygame.K_b:
+                    protocol.sendMessage(TYPE = DROP)
 
         else:
             login_screen.event(event)
                 
     # make things happen
-    if statea.logged_in == False:
+    if statea.logged_in == False && :
         world.run()
     
     # Set the screen background

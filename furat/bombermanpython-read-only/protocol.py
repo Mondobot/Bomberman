@@ -95,6 +95,8 @@ class _ProtocolsModule():
 		for i in range(0, no_clients, 2):
 			players_pos += [(aux[i], aux[i + 1])]
 
+		print "Players: ", players_pos
+
 		world.setPlayers(client_id, players_pos)
 
 		# Populate the bombs
