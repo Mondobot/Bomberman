@@ -47,6 +47,7 @@ public class Server extends Thread {
 				Transformer transformer = transformerFactory.newTransformer();
 				transformer.transform(new DOMSource(doc), new StreamResult(database));
 			}
+			games = new ArrayList<GameWorld>();
 			doc = parser.parse(database);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -111,8 +112,14 @@ public class Server extends Thread {
 	}
 	public void startGame(final int id) {
 		for (Client client:games.get(id).getClients()) {
-			client.notifyStart();
+			if (client.clientId != id) {
+				client.sendMessage("3");
+				
+			} else {
+				client.sendOk(3);
+			}
 		}
+		
 		GameWorld game=games.get(id);
 		game.init();
 		scheduler.scheduleAtFixedRate(new Runnable() {
@@ -123,11 +130,11 @@ public class Server extends Thread {
 					client.update();
 				}	
 			}
-		}, 0, 300, TimeUnit.MILLISECONDS);
+		}, 0, 50, TimeUnit.MILLISECONDS);
 	}
 	
 	public static void main(String args[]) {
-		Server s = new Server(25000);
+		Server s = new Server(25001);
 		s.start();
 	}
 }

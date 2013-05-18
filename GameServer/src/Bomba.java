@@ -53,6 +53,9 @@ public class Bomba extends Thread {
 		Map.Entry<Integer,Integer> expl =
 			    new AbstractMap.SimpleEntry<Integer, Integer>(posX,posY);
 		explozii.add(expl);
+		Map.Entry<Integer,Integer> rad =
+			    new AbstractMap.SimpleEntry<Integer, Integer>(radius,0);
+		explozii.add(rad);
 		int q,dir1=0,dir2=0;
 		
 		for (j=0;j<game.getClients().size();j++)
@@ -100,7 +103,7 @@ public class Bomba extends Thread {
 				if (game.map[posX+i*dir1][posY+i*dir2]==2)
 				{
 					
-					explozii.add(explozie);
+					//explozii.add(explozie);
 					game.map[posX+i*dir1][posY+i*dir2]=0;
 					break;
 				}
@@ -110,16 +113,17 @@ public class Bomba extends Thread {
 					if (cli.pozX==posX+i*dir1 && cli.pozY==posY+i*dir2)
 					{
 						gasit=true;
-						explozii.add(explozie);
+						//explozii.add(explozie);
 						
 						decedati.add(cli);
 						
 					}
 				}
-				if (game.map[posX+i*dir2][posY+i*dir2]>=21 && game.map[posX+i*dir1][posY+i*dir2]<=25)
+				if (game.map[posX+i*dir1][posY+i*dir2]>=21 && game.map[posX+i*dir1][posY+i*dir2]<=25)
 				{
+					
 					gasit=true;
-					explozii.add(explozie);
+					//explozii.add(explozie);
 					game.map[posX+i*dir1][posY+i*dir2]-=10;
 					
 				}

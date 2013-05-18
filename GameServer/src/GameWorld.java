@@ -13,8 +13,8 @@ public class GameWorld {
 	{
 		int vect[][]={ 
 				{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-				{1,31, 2, 2, 0, 2, 0, 0,24, 2,22, 0, 0, 0, 0, 0,34, 1},
-				{1, 2, 1, 0, 1,22, 1, 0, 1, 2, 1, 0, 1, 0, 1, 0, 1, 1},
+				{1, 0, 0, 2, 0, 2, 0, 0,24, 2,22, 0, 0, 0, 0, 0,34, 1},
+				{1, 31, 1, 0, 1,22, 1, 0, 1, 2, 1, 0, 1, 0, 1, 0, 1, 1},
 				{1, 2,21, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 1},
 				{1,25, 1, 0, 1, 0, 1, 2, 1,21, 1, 0, 1, 0, 1, 0, 1, 1},
 				{1, 0, 0, 0, 2,23, 2, 2, 2,22, 2,24, 0, 2, 2,21, 0, 1},
@@ -35,6 +35,7 @@ public class GameWorld {
 				//21-25=powerup nedescoperit
 				
 		};
+		
 		map=vect;
 		
 
@@ -44,6 +45,7 @@ public class GameWorld {
 		int i,u,t;
 		for (i=0;i<clientList.size();i++)
 		{
+			
 			Client juc=clientList.get(i);
 			for (u=0;u<map.length;u++)
 				for (t=0;t<map[0].length;t++)
@@ -62,6 +64,7 @@ public class GameWorld {
 	public GameWorld(Client owner, int id) {
 		this.id = id;
 		this.owner = owner;
+		clientList = new ArrayList<Client>();
 		initMap();
 	}
 	
@@ -74,7 +77,7 @@ public class GameWorld {
 	}
 	
 	public String stringifyMap(int clientId) {
-		String string = "";
+		String string = "6";
 		string += (char) map.length;
 		string += (char) map[0].length;
 		for (int i = 0; i < map.length; i++) {
@@ -83,30 +86,44 @@ public class GameWorld {
 			}
 		}
 		string += (char) clientId;
+		System.out.println(clientId);
 		string += (char) clientList.size();
+	
 		for (Client client: clientList) {
-			string += (char)client.pozX;
 			string += (char)client.pozY;
+			string += (char)client.pozX;
 		}
+		int size=0;
+		for (Client client: clientList)
+		{
+			size+=client.bombs.size();
+		}
+		
+	
+		string+=(char)size;
 		for (Client client: clientList) {
-			string += (char) client.bombs.size();
 			for (Bomba bomb: client.bombs) {
-				string += (char)bomb.posX;
 				string += (char)bomb.posY;
+				string += (char)bomb.posX;
 			}
 		}
+		
+		size=0;
+		for (Client client:clientList)
+		{
+			for (Bomba bomb:client.bombs)
+			{
+				size+=bomb.explozii.size();
+			}
+		}
+		string+=(char)(size/2);
 		for (Client client: clientList) {
 			for (Bomba bomb: client.bombs) {
-				string += (char) bomb.explozii.size();
 				for (Map.Entry<Integer, Integer> explozie: bomb.explozii) {
-					string += (char)explozie.getKey().intValue();
+				
 					string += (char)explozie.getValue().intValue();
+					string += (char)explozie.getKey().intValue();
 				}
-			}
-		}
-		for (Client client: clientList) {
-			for (Integer power:client.powerUp) {
-				string += (char) power.intValue();
 			}
 		}
 		return string;

@@ -50,13 +50,13 @@ public class Client extends Thread {
 			try {
 				message = socketReader.readLine();
 				System.out.println(message);
-				if (authenticated == false) {
+				/*if (authenticated == false) {
 					if (message.charAt(0) == '0') {
 						handleClient(message);
 					} else {
 						continue;
 					}
-				}
+				}*/
 				if (message.charAt(0) == '1') {
 					createNewGame();
 				} else if (message.charAt(0) == '2') {
@@ -73,13 +73,14 @@ public class Client extends Thread {
 
 			} catch (IOException e) {
 				e.printStackTrace();
+				return;
 			}
 		}
 	}
 
 	synchronized void putBomb() {
 		// daca numarul de bombe puse deja depaseste limita
-		if (bombs.size() > 1)
+		if (bombs.size() >= 1)
 			return;
 		/*
 		 * Map.Entry<Integer,Integer> bomb = new
@@ -95,9 +96,10 @@ public class Client extends Thread {
 	}
 
 	boolean handleClient(String message) {
+		System.out.println(message);
 		String userName = getUserName(message);
 		String passwd = getPasswd(message);
-		// TODO if handle client successfully set authenticated
+		// if handle client successfully set authenticated
 		if (server.clientExists(userName, passwd)) {
 			authenticated = true;
 			sendMessage("ok");
@@ -118,7 +120,7 @@ public class Client extends Thread {
 	synchronized boolean createNewGame() {
 		server.createNewGame(this);
 		gameId = server.getSize();
-		sendOk();
+		sendOk(1);
 		return true;
 	}
 
@@ -129,20 +131,23 @@ public class Client extends Thread {
 		if (dir == '1')
 			newPozy += 1;
 		if (dir == '2')
-			newPozx -= 1;
+			newPozx += 1;
 		if (dir == '3')
 			newPozy -= 1;
 		if (dir == '4')
-			newPozx += 1;
+			newPozx -= 1;
 		GameWorld joc = server.getGameWorld(gameId);
 		if (joc.map[newPozx][newPozy] == 1)
 			return;
+		
 		if (joc.map[newPozx][newPozy] == 2)
 			return;
+		
 		if (joc.map[newPozx][newPozy] >= 21 && joc.map[newPozx][newPozy] <= 25)
 			return;
 
 		int i, j;
+		
 		// verific bombele sale
 		for (i = 0; i < bombs.size(); i++) {
 			int bombX = bombs.get(i).posX;
@@ -167,19 +172,21 @@ public class Client extends Thread {
 			}
 		}
 		// inseamna ca se poate muta acolo
+		System.out.println(pozX+" "+pozY+" "+newPozx+" "+newPozy);
 		pozX = newPozx;
 		pozY = newPozy;
 	}
 
 	boolean joinGame(String message) {
-		gameId = Integer.parseInt(message.substring(1, message.length() - 1));
+		gameId = Integer.parseInt(message.substring(1, message.length()));
+		
 		server.joinGame(this, gameId);
-		sendOk();
+		sendOk(message.charAt(0));
 		return true;
 	}
 
-	void sendOk() {
-		sendMessage(okMsg);
+	void sendOk(int tip) {
+		sendMessage(okMsg + " " +tip);
 	}
 
 	synchronized void sendMessage(String message) {
@@ -193,11 +200,12 @@ public class Client extends Thread {
 	}
 
 	void notifyStart() {
-		sendMessage(startGame);
+		sendOk(3);
 	}
 
 	void update() {
 		sendMessage(server.getGameWorld(this.gameId)
 				.stringifyMap(this.clientId));
 	}
+	
 }
