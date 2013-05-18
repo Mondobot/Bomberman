@@ -125,8 +125,10 @@ class Map(object):
     def get_map(self):
         return self.__map
         
-    def __set_map(self, other):
-        self.__map = other
+    def set_map(self, new_map, width, height):
+        self.__map = new_map
+        self._height = height
+        self._width = width
         
     def get_dblocks(self):
         return self.__dblocks

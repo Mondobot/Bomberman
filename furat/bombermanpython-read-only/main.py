@@ -12,6 +12,7 @@ from pgu import gui
 from state import State
 import network
 import protocol
+import time
 
 FPS     =   40
 WIDTH   =   800
@@ -42,9 +43,11 @@ login_screen = LoginScreen(statea, screen, width = WIDTH, height = HEIGHT)
 
 # -------- Main Program Loop -----------
 network.connect()
+protocol.sendMessage(TYPE = "1")
+#time.sleep(5)
 protocol.sendMessage(TYPE = "3")
 
-while world.players[0].is_alive() and not done:
+while not done:
     for event in pygame.event.get(): # User did something
         if event.type == pygame.QUIT: # If user clicked close
             done = True # Flag that we are done so we exit this loop

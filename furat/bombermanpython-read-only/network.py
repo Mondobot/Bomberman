@@ -9,8 +9,8 @@ class _NetworkModule():
 	def __init__(self):
 		self.status = False
 		self.error = ["", ""]
-		self.sv_ip = '127.0.0.1'
-		self.sv_port = 25000
+		self.sv_ip = '192.168.15.182'
+		self.sv_port = 25001
 
 	"""
 		Attempts a connection and in case of failure sets
@@ -70,6 +70,7 @@ class _NetworkModule():
 		Dummy recv function // We should have a select here //
 	"""
 	def recv(self):
+		reply = ""
 		try:
 			reply = self.gate.recv(1024)
 
@@ -77,7 +78,7 @@ class _NetworkModule():
 			print "cannot recv"
 			return ""
 
-		print reply
+#		print reply
 		return reply
 
 	def recvSelect(self):
@@ -88,7 +89,7 @@ class _NetworkModule():
 		inReady, outReady, exReady = select.select(input, [], [], timeout)
 
 		if inReady != []:
-			msg = self.recv()
+			message = self.recv()
 
 		return message
 

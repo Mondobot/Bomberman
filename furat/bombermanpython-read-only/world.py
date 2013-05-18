@@ -32,12 +32,15 @@ class PygameWorld(World):
         self.__screen = screen
         self.__bomb_model = PygameBombModel('images/bomb.png', 'images/explosion.png', tiles_width=32, tiles_height=32)
         self.__bombs = []
-        self._initPlayers(1, 2)
+        #self._initPlayers(1, 2)
         self.place_bomb((2, 2), 1, 20)
         self.__bombs[0].startExplosion()
         self.expl_bomb((2, 2), 2)
         self.place_bomb((1, 3), 1, 20)
         self.expl_bomb((1, 3), 2)
+
+    def setMap(self, new_map, width, height):
+        self._map.set_map(new_map, width, height)
 
     def _initPlayers(self, me, no_players):
         base = 'images/bomberman'
@@ -82,10 +85,8 @@ class PygameWorld(World):
         self._map.draw()
 
         for bomb in self.__bombs:
-            print "desenez"
             bomb.draw()
 
-        print "ceva"
 
             
         for pl in self.players:
