@@ -93,33 +93,38 @@ class _ProtocolsModule():
 		players_pos = []
 
 		for i in range(0, no_clients, 2):
-			print "ceva"
 			players_pos += [(aux[i], aux[i + 1])]
 
-		print "apelez"
 		world.setPlayers(client_id, players_pos)
 
 		# Populate the bombs
 		head += no_clients * 2
 		no_bombs = ord(codedMap[head])
+		print "bombs ", no_bombs
 
 		world.clearBombs()
 		head += 1
 		bombs_pos = []
 		aux = map(ord, codedMap[head : head + no_bombs * 2])
-		
+		print "bombs: ", aux
+
 		for i in range(0, no_bombs * 2, 2):
 			world.place_bomb((aux[i], aux[i + 1]), 1, 20)
 
 		head += no_bombs * 2
 		no_expl = ord(codedMap[head])
-		#if no_expl > 0:
+		print "no_expl ", no_expl
 
 		head += 1
-		aux = map(ord, codedMap[head : head + no_expl * 3])
+
+		aux = map(ord, codedMap[head : head + no_expl * 4 + 2])
+
+		print aux
 		for i in range(0, no_expl * 4, 4):
-			world.place_bomb((aux[i], aux[i + 1]), 3, aux[i + 2])
-			world.expl_bomb((aux[i], aux[i + 1]), aux[i + 2])
+			world.place_bomb((aux[i], aux[i + 1]), 3, aux[i + 3])
+			index = world.getNoBombs()
+
+			world.expl_bomb((aux[i], aux[i + 1]), aux[i + 3])
 
 	def _sendStart(self):
 		network.send(START)

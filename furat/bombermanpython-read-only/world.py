@@ -42,13 +42,13 @@ class PygameWorld(World):
     def setMap(self, new_map, width, height):
         self._map.set_map(new_map, width, height)
 
-    def _initPlayers(self, me, no_players):
+    def _initPlayers(self, me, no_players, pos):
         base = 'images/bomberman'
 
         self.players = []
 
         for i in range(0, no_players):
-            player = PygamePlayer(self.__screen, (1, 1), (1, 0),
+            player = PygamePlayer(self.__screen, pos[i], (1, 0),
                                  base + str(i) + '.png', tiles_width = 32,
                                  tiles_height = 32)
 
@@ -61,7 +61,7 @@ class PygameWorld(World):
             return
 
         if self.players == []:
-            self._initPlayers(me, len(pos))
+            self._initPlayers(me, len(pos), pos)
 
         if len(pos) != len(self.players):
             return
@@ -100,13 +100,14 @@ class PygameWorld(World):
     
     def clearBombs(self):
         del self.__bombs[:]
+        print "MY BOMBS ", self.__bombs
    
     def __player_can_place_bomb(self):
         col, row = self.players[0].position
         
         if self._map.has_nothing(row, col):
             return self.players[0].can_place_bomb()
-            
+        
         return False
         
     def __player_can_walk(self):
@@ -127,13 +128,22 @@ class PygameWorld(World):
 
                
     def expl_bomb(self, pos, range):
-		  expl = []
-		  expl += self.__explode_place(pos, 0, range)
-		  expl += self.__explode_place(pos, 1, range)
-		  expl += self.__explode_place(pos, 2, range)
-		  expl += self.__explode_place(pos, 3, range)
-            
-		  self.__bombs[0].explode_positions += expl
+            expl = []
+            expl += self.__explode_place(pos, 0, range)
+            expl += self.__explode_place(pos, 1, range)
+            expl += self.__explode_place(pos, 2, range)
+            expl += self.__explode_place(pos, 3, range)
+
+            bmb = None
+            for i in self.__bombs:
+                if i.position == pos:
+                    bmb = i
+
+            if bmb != None:
+                bmb.explode_positions += expl
+
+    def getNoBombs(self):
+        return len(self.__bombs)
 
     def __can_explode_place(self, position):
         col, row = position

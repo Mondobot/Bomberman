@@ -67,9 +67,12 @@ class Player(object):
             return
 
         if coords != self.position:
-            self.walking = True
-            new_dir = tuple(map(operator.sub, self.position, coords))
+            new_dir = tuple(map(operator.sub, coords, self.position))
+            #new_dir = tuple(reversed(new_dir))
+
+            print "new dir " #+ str(new_dir)
             self.change_direction(new_dir)
+            return
 
         self.position = coords
             
@@ -136,6 +139,7 @@ class PygamePlayer(Player):
         self.__current_tile = (self.__current_tile + 1) % self.__tiles_per_direction
     
     def draw(self):
+        print self._direction, "   ", self.__current_tile
         tile = self.__tiles[self._direction][self.__current_tile]
         self.__screen.blit(tile, self.__screen_position)
         

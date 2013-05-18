@@ -64,7 +64,8 @@ while not done:
     for event in pygame.event.get(): # User did something
         if event.type == pygame.QUIT: # If user clicked close
             done = True # Flag that we are done so we exit this loop
-        elif event.type == pygame.KEYUP:
+
+        elif event.type == pygame.KEYUP and not world.players[world.me].walking:
             if event.key == pygame.K_UP:
                 protocol.sendMessage(TYPE = MOVE, DIR = NORTH)
             elif event.key == pygame.K_DOWN:
