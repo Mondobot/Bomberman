@@ -53,13 +53,13 @@ while not done:
             done = True # Flag that we are done so we exit this loop
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_UP:
-                world.players[world.me].change_direction(world.players[0].NORTH)
+                world.players[world.me].change_direction(world.players[world.me].NORTH)
             elif event.key == pygame.K_DOWN:
-                world.players[world.me].change_direction(world.players[0].SOUTH)
+                world.players[world.me].change_direction(world.players[world.me].SOUTH)
             elif event.key == pygame.K_RIGHT:
-                world.players[world.me].change_direction(world.players[0].RIGHT)
+                world.players[world.me].change_direction(world.players[world.me].RIGHT)
             elif event.key == pygame.K_LEFT:
-                world.players[world.me].change_direction(world.players[0].LEFT)
+                world.players[world.me].change_direction(world.players[world.me].LEFT)
             elif event.key == pygame.K_b:
                 #world.place_bomb()
                 pass

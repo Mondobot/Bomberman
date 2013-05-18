@@ -2,6 +2,8 @@
 # Author: Bruna Xavier
 # Creation date: 04-30-2011
 
+import operator
+
 class Player(object):
     
     def __init__(self, position, direction):
@@ -63,6 +65,11 @@ class Player(object):
     def setPos(self, coords):
         if self.walking:
             return
+
+        if coords != self.position:
+            self.walking = True
+            new_dir = tuple(map(operator.sub, self.position, coords))
+            self.change_direction(new_dir)
 
         self.position = coords
             
