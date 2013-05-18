@@ -4,16 +4,16 @@
 
 class Map(object):
     
-    def __init__(self, map, width, height, dblocks={}, rewards={}, forbidden_positions_dblocks=[]):
+    def __init__(self, map, width, height):
         self.__map = map[:]
         self._width = width
         self._height = height
-        self.__dblocks = dblocks.copy()
-        self.__rewards = rewards.copy()
-        self.__forbidden_positions_dblocks = [self.__convert_position(x, y) for x, y in forbidden_positions_dblocks[:]]
+        #self.__dblocks = dblocks.copy()
+        #self.__rewards = rewards.copy()
+        #self.__forbidden_positions_dblocks = [self.__convert_position(x, y) for x, y in forbidden_positions_dblocks[:]]
         
-        self.__fill_map_with_dblocks_and_rewards()
-
+        #self.__fill_map_with_dblocks_and_rewards()
+    """
     def __position_allowed_for_dblocks(self, pos):
         return (self.__map[pos] == None) and (pos not in self.__forbidden_positions_dblocks)
         
@@ -66,7 +66,8 @@ class Map(object):
             
             # remove position from positions for dblocks
             allowed_positions_for_dblocks.remove(position)
-            
+    """
+    """
     def has_ublock(self, row, col):
         pos = self.__convert_position(row, col)
         element = self.__map[pos]
@@ -106,7 +107,7 @@ class Map(object):
             reward = self.__map[pos][1]
             self.__map[pos] = None
             return reward
-        
+    """     
     def element_at_position(self, row, col):
         i = self.__convert_position(row, col)
         return self.map[i]
@@ -120,12 +121,14 @@ class Map(object):
         if 0 > col or col > self._width :
             return False
         return True
-        
+ 
     def get_map(self):
         return self.__map
         
-    def __set_map(self, other):
-        self.__map = other
+    def set_map(self, new_map, width, height):
+        self.__map = new_map
+        self._height = height
+        self._width = width
         
     def get_dblocks(self):
         return self.__dblocks
@@ -150,17 +153,22 @@ class Map(object):
     rewards = property(get_rewards)
     forbidden_positions_dblocks = property(get_forbidden_positions_dblocks)
 
+EMPTY = 0
+
+
 import pygame
 class PygameMap(Map):
 
-    def __init__(self, map, width, height, screen, dblock_image, ublock_image, reward_image, tiles_width=16, tiles_height=16, ublocks=[], dblocks={}, rewards={}, forbidden_positions_dblocks=[]):
-        super(PygameMap, self).__init__(map, width, height, dblocks, rewards, forbidden_positions_dblocks)
+    def __init__(self, map, width, height, screen, dblock_image, ublock_image, reward_image, tiles_width=16, tiles_height=16):
+        super(PygameMap, self).__init__(map, width, height)
         
         self.__screen = screen
         self.__tiles_width = tiles_width
         self.__tiles_height = tiles_height        
 
-        self.__ublock_image = self.__load_image(ublock_image, ublocks)
+        dblocks = {0:3}
+        rewards = {0:1}
+        self.__ublock_image = self.__load_image(ublock_image, [0])
         self.__dblock_image = self.__load_image(dblock_image, dblocks.keys())
         self.__reward_image = self.__load_image(reward_image, rewards.keys())
         
@@ -185,14 +193,12 @@ class PygameMap(Map):
         for i in xrange(0, self._height):
             for j in xrange(0, self._width):
                 element = super(PygameMap, self).element_at_position(i, j)
-                if isinstance(element, int):
-                    image = self.__ublock_image[element]
+                if element == 1:
+                    image = self.__ublock_image[0]
                     self.__draw_tile(image, i, j)
-                elif isinstance(element, tuple):
-                    dblock, reward = element
-                    if dblock != None:
-                        image = self.__dblock_image[dblock]
-                        self.__draw_tile(image, i, j)
-                    elif reward != None:
-                        image = self.__reward_image[reward]
-                        self.__draw_tile(image, i, j)
+                elif element == 2 or  21 <= element <= 25:
+                    image = self.__dblock_image[0]
+                    self.__draw_tile(image, i, j)
+                elif 11 <= element <= 25:
+                    image = self.__reward_image[0]
+                    self.__draw_tile(image, i, j)

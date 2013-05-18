@@ -2,13 +2,15 @@
 # Author: Bruna Xavier
 # Creation date: 04-30-2011
 
+import operator
+
 class Player(object):
     
     def __init__(self, position, direction):
         self.life = 3
         
         # if player is trying to align to grid
-        self._walking = False
+        self.walking = False
         
         # virtual position
         self.__start_position = position
@@ -31,7 +33,8 @@ class Player(object):
         self.life -= 1
         self.position = self.__start_position
         self._direction = self.__start_direction
-        
+
+    """
     def explode_bomb(self):
         self.__bombs -= 1
         
@@ -40,23 +43,38 @@ class Player(object):
         
     def can_place_bomb(self):
         return self.__bombs < self.__max_bombs
-        
+    """        
+
     def cancel_movement(self):
         x, y = self.position
         dx, dy = self._direction
         self.position = x-dx, y-dy
-        self._walking = False
+        self.walking = False
         
     def change_direction(self, other):
-        if not self._walking:
+        if not self.walking:
             self._direction = other
             self.__update_position()
-            self._walking = True
+            self.walking = True
 
     def __update_position(self):        
         x, y = self.position
         dx, dy = self._direction
         self.position = x+dx, y+dy
+
+    def setPos(self, coords):
+        if self.walking:
+            return
+
+        if coords != self.position:
+            new_dir = tuple(map(operator.sub, coords, self.position))
+            #new_dir = tuple(reversed(new_dir))
+
+            print "new dir " #+ str(new_dir)
+            self.change_direction(new_dir)
+            return
+
+        self.position = coords
             
 import pygame
 class PygamePlayer(Player):
@@ -88,9 +106,9 @@ class PygamePlayer(Player):
     def reset(self):
         super(PygamePlayer, self)._reset()
         self.__screen_position = (self.position[0] * self.__tiles_width, self.position[1] * self.__tiles_height)
-        
+    
     def walk(self):
-        if not self._walking:
+        if not self.walking:
             # stay in this position if not walking
             self.__current_tile = 0
             return
@@ -107,12 +125,12 @@ class PygamePlayer(Player):
         # stop walking if player is horizontally align with grid
         if abs(fx - x) < abs(dx):
             x = fx
-            self._walking = False
+            self.walking = False
         
         # stop walking if player is vertically align with grid        
         if abs(fy - y) < abs(dy):
             y = fy
-            self._walking = False
+            self.walking = False
             
         # update screen position
         self.__screen_position = x, y
@@ -121,6 +139,7 @@ class PygamePlayer(Player):
         self.__current_tile = (self.__current_tile + 1) % self.__tiles_per_direction
     
     def draw(self):
+        print self._direction, "   ", self.__current_tile
         tile = self.__tiles[self._direction][self.__current_tile]
         self.__screen.blit(tile, self.__screen_position)
         
