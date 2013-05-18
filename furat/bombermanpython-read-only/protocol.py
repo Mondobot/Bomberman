@@ -1,5 +1,4 @@
 import network
-
 NONE = "-1"
 LOGIN = "0"
 CREATE = "1"
@@ -7,9 +6,11 @@ JOIN = "2"
 START = "3"
 MOVE = "4"
 DROP = "5"
-MAP = 6
+MAP = "6"
 
 class _ProtocolsModule():
+
+
 	def __init__(self):
 		pass
 
@@ -20,7 +21,16 @@ class _ProtocolsModule():
 			return self._handleLogin(**params)
 
 		elif msg_type == START:
-			return self._sendStart()
+			self._sendStart()
+
+		elif msg_type == CREATE:
+			self._sendCreate()
+
+		elif msg_type == JOIN:
+			self._sendJoin()
+
+		else:
+			print "ce plm de mesaj e " + msg_type
 
 	def recvMessage(self, world):
 		if not network.isConnected():
@@ -30,13 +40,15 @@ class _ProtocolsModule():
 			return ""
 
 		message = network.mySelect()
-		
+		print message
+
 		if message == "":
 			return
 
-		msg_type = int(message[0])
+		msg_type = message[0]
 
 		if msg_type == MAP:
+			print "intra pe MAP"
 			self._handleMapRecv(message[1:], world)
 
 
@@ -59,50 +71,74 @@ class _ProtocolsModule():
 		head = 0
 
 		# Read the map
-		height = int(codedMap[head])
-		width = int(codedMap[head + 1])
+		height = ord(codedMap[head])
+		width = ord(codedMap[head + 1])
 
 		head += 2
-		map = map(int, codedMap[head : head + height * width])
+		map_ceva = map(ord, codedMap[head : head + height * width])
+		world.setMap(map_ceva, width, height)
 
 		head += height * width
-		client_id = int(codedMap[head])
-		no_clients = int(codedMap[head + 1])
+		client_id = ord(codedMap[head])
+		no_clients = ord(codedMap[head + 1])
 
 		# Populate the clients
 		head += 2
-		aux = map(int, codedMap[head : head + no_clients * 2])
+		aux = map(ord, codedMap[head : head + no_clients * 2])
 		players_pos = []
 
 		for i in range(0, len(players_pos), 2):
 			players_pos += [(aux[i], aux[i + 1])]
-		world.setPLayers(client_id, players_pos)
+		world.setPlayers(client_id, players_pos)
 
 		# Populate the bombs
-		head += no_clinets * 2
-		no_bombs == int(codedMap[head])
+		head += no_clients * 2
+		no_bombs = ord(codedMap[head])
 
 		world.clearBombs()
 		head += 1
 		bombs_pos = []
-		aux = map(int, codedMap[head : head + no_bombs * 2])
+		aux = map(ord, codedMap[head : head + no_bombs * 2])
 		
 		for i in range(0, no_bombs * 2, 2):
 			world.place_bomb((aux[i], aux[i + 1]), 1, 20)
 
 		head += no_bombs * 2
-		no_expl = codedMap[head]
+		no_expl = ord(codedMap[head])
 		#if no_expl > 0:
 
-
 		head += 1
-		aux = map(int, codedMap[head : head + no_expl * 3])
-		for i in range(0, no_expl * 3, 3):
+		aux = map(ord, codedMap[head : head + no_expl * 3])
+		for i in range(0, no_expl * 4, 4):
 			world.place_bomb((aux[i], aux[i + 1]), 3, aux[i + 2])
 			world.expl_bomb((aux[i], aux[i + 1]), aux[i + 2])
 
 	def _sendStart(self):
 		network.send(START)
+		if not self._getAck(START):
+			print "PLM, NU MERGE START"
+
+	def _sendCreate(self):
+		network.send(CREATE)
+		if not self._getAck(CREATE):
+			print "PLM, NU MERGE CREAT"
+
+
+	def _sendJoin(self):
+		network.send(JOIN + "0")
+		if not self._getAck(JOIN):
+			print "PLM, NU MERGE JOIN"
+
+	def _getAck(self, msg_type):
+		msg = network.recv()
+
+		if msg == "":
+			return False
+
+		if msg != "OK " + msg_type:
+			return False
+
+		return True
 
 _inst = _ProtocolsModule()
 
