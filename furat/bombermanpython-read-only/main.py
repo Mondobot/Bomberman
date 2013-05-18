@@ -10,6 +10,8 @@ from world import PygameWorld
 from login_screen import LoginScreen
 from pgu import gui
 from state import State
+import network
+import protocol
 
 FPS     =   40
 WIDTH   =   800
@@ -39,21 +41,25 @@ login_screen = LoginScreen(statea, screen, width = WIDTH, height = HEIGHT)
 #login_screen.run(LoginScreen(statea, screen, width = WIDTH, height = HEIGHT))
 
 # -------- Main Program Loop -----------
+network.connect()
+protocol.sendMessage(TYPE = "3")
+
 while world.players[0].is_alive() and not done:
     for event in pygame.event.get(): # User did something
         if event.type == pygame.QUIT: # If user clicked close
             done = True # Flag that we are done so we exit this loop
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_UP:
-                world.players[0].change_direction(world.players[0].NORTH)
+                world.players[world.me].change_direction(world.players[0].NORTH)
             elif event.key == pygame.K_DOWN:
-                world.players[0].change_direction(world.players[0].SOUTH)
+                world.players[world.me].change_direction(world.players[0].SOUTH)
             elif event.key == pygame.K_RIGHT:
-                world.players[0].change_direction(world.players[0].RIGHT)
+                world.players[world.me].change_direction(world.players[0].RIGHT)
             elif event.key == pygame.K_LEFT:
-                world.players[0].change_direction(world.players[0].LEFT)
+                world.players[world.me].change_direction(world.players[0].LEFT)
             elif event.key == pygame.K_b:
-                world.place_bomb()
+                #world.place_bomb()
+                pass
 
         else:
             login_screen.event(event)

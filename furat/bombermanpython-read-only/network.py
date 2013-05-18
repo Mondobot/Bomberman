@@ -1,5 +1,6 @@
 import socket
 import sys
+import select
 
 class _NetworkModule():
 	"""
@@ -79,8 +80,18 @@ class _NetworkModule():
 		print reply
 		return reply
 
-	def recv_select(self):
-		pass
+	def recvSelect(self):
+		input = [self.gate]
+		timeout = 0.001
+		message = ""
+
+		inReady, outReady, exReady = select.select(input, [], [], timeout)
+
+		if inReady != []:
+			msg = self.recv()
+
+		return message
+
 
 """
 This whole class is a singleton
@@ -92,4 +103,4 @@ isConnected = _inst.isConnected
 connect = _inst.connect
 send = _inst.send
 recv = _inst.recv
-select = _inst.recv_select
+mySelect = _inst.recvSelect

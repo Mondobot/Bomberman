@@ -60,24 +60,23 @@ class PygameBomb(Bomb):
     EXPLODING           =   3
     EXPLODED            =   4
     
-    def __init__(self, screen, model, position, range):
+    def __init__(self, screen, model, position, status, range):
         super(PygameBomb, self).__init__(position, range)
         self.__screen = screen
         self.__model = model
         self.__screen_position = (position[0] * self.__model.tiles_width, position[1] * self.__model.tiles_height)
         
-        self.__status = self.READY_TO_EXPLODE
+        self.__status = status
         self.__current_tile = 0
         
         self.__explosion_duration = 500
         self.__time_set = pygame.time.get_ticks()
         
     def startExplosion(self):
-        if self.__canStartExplosion():
-            if self.__status == self.READY_TO_EXPLODE:
-                self.__status = self.EXPLODING
-                self.__time_set = pygame.time.get_ticks()
-                return True
+        if self.__status == self.READY_TO_EXPLODE:
+             self.__status = self.EXPLODING
+             self.__time_set = pygame.time.get_ticks()
+             return True
         return False
     
     def finishExplosion(self):
@@ -96,6 +95,7 @@ class PygameBomb(Bomb):
             
         elif self.__status == self.EXPLODING:
             #tile central
+            print "exploding"
             tile = self.__model.explosion_tiles[4][0]
             self.__screen.blit(tile, self.__screen_position)
             
