@@ -102,38 +102,13 @@ class PygameWorld(World):
     def clearBombs(self):
         del self.__bombs[:]
         print "MY BOMBS ", self.__bombs
-   
-    def __player_can_place_bomb(self):
-        col, row = self.players[0].position
-        
-        if self._map.has_nothing(row, col):
-            return self.players[0].can_place_bomb()
-        
-        return False
-        
-    def __player_can_walk(self):
-        col, row = self.players[0].position
-        if not self._map.insideBounds(row, col):
-            return False
-        
-        if self._map.has_nothing(row, col):
-            return True
-            
-        if self._map.has_ublock(row, col) or self._map.has_dblock(row, col):
-            return False
-            
-        if self._map.has_reward(row, col):
-            print "GET REWARD!!", self._map.get_reward(row, col)
-            self._map.destroy_reward(row, col)
-            return True
 
-               
     def expl_bomb(self, pos, range):
             expl = []
-            expl += self.__explode_place(pos, 0, range)
-            expl += self.__explode_place(pos, 1, range)
-            expl += self.__explode_place(pos, 2, range)
-            expl += self.__explode_place(pos, 3, range)
+            expl += self.__explode_place((pos[0], pos[1] - 1), 0, 0, range)
+            expl += self.__explode_place((pos[0] + 1, pos[1]), 1, 0, range)
+            expl += self.__explode_place((pos[0], pos[1] + 1), 2, 0, range)
+            expl += self.__explode_place((pos[0] - 1, pos[1]), 3, 0, range)
 
             bmb = None
             for i in self.__bombs:
@@ -158,27 +133,33 @@ class PygameWorld(World):
             return False
             
         if self._map.has_dblock(row, col):
-            self._map.destroy_dblock(row, col)
             return False
-            
-        if self._map.has_reward(row, col):
-            self._map.destroy_reward(row, col)
-            return True
+
+        return True
     
-    def __explode_place(self, start_position, direction, range):
-        if range == 0:
+    def __explode_place(self, start_position, direction, depth, range):
+        if range == depth:
             return []
 
         expl_pos = []
 
         col, row = start_position
-        if direction == 0:
-            expl_pos += [(col, row-range, direction)] + self.__explode_place(start_position, direction, range-1)
-        elif direction == 1:
-            expl_pos += [(col+range, row, direction)] + self.__explode_place(start_position, direction, range-1)
-        elif direction == 2:
-            expl_pos += [(col, row+range, direction)] + self.__explode_place(start_position, direction, range-1)
-        elif direction == 3:
-            expl_pos += [(col-range, row, direction)] + self.__explode_place(start_position, direction, range-1)
-        
+        if direction == 0 and self.__can_explode_place((col, row)):
+            expl_pos += [(col, row, direction)]
+            expl_pos += self.__explode_place((col, row-1), direction,
+                                                          depth + 1, range)
+
+        elif direction == 1 and self.__can_explode_place((col, row)):
+            expl_pos += [(col, row, direction)]
+            expl_pos += self.__explode_place((col+1, row), direction,
+                                                          depth + 1, range)
+        elif direction == 2 and self.__can_explode_place((col, row)):
+            expl_pos += [(col, row, direction)]
+            expl_pos += self.__explode_place((col, row + 1), direction,
+                                                          depth + 1, range)
+        elif direction == 3 and self.__can_explode_place((col, row)):
+            expl_pos += [(col, row, direction)]
+            expl_pos += self.__explode_place((col-1, row), direction,
+                                                          depth + 1, range)
+
         return expl_pos

@@ -8,106 +8,22 @@ class Map(object):
         self.__map = map[:]
         self._width = width
         self._height = height
-        #self.__dblocks = dblocks.copy()
-        #self.__rewards = rewards.copy()
-        #self.__forbidden_positions_dblocks = [self.__convert_position(x, y) for x, y in forbidden_positions_dblocks[:]]
-        
-        #self.__fill_map_with_dblocks_and_rewards()
-    """
-    def __position_allowed_for_dblocks(self, pos):
-        return (self.__map[pos] == None) and (pos not in self.__forbidden_positions_dblocks)
-        
-    def __fill_map_with_dblocks_and_rewards(self):
-        from random import sample
-        from random import shuffle
-        from random import choice
-        
-        # list of rewards
-        rewards = list()
-        count = sum(self.__rewards.values())
-        for x, y in self.__rewards.iteritems():
-            if y > 0:
-                rewards += [x] * y
-        shuffle(rewards)
-        
-        # list of dblocks
-        dblocks = list()
-        count = sum(self.__dblocks.values())
-        for x, y in self.__dblocks.iteritems():
-            if y > 0:
-                dblocks += [x] * y
-        shuffle(dblocks)    
-        
-        # dblocks used to hide rewards
-        selected_dblocks = sample(dblocks, len(rewards))
-        
-        # remove selected dblocks from list of dblocks
-        for dblock in selected_dblocks:
-            dblocks.remove(dblock)
-        
-        pieces = zip(selected_dblocks, rewards) + zip(dblocks, [None] * len(dblocks))
-        num_pieces = len(pieces)
-        
-        # get possible places to put a destructible block
-        allowed_positions_for_dblocks = filter(lambda i: self.__position_allowed_for_dblocks(i), range(len(self.__map)))
-        
-        # select some places to put dblocks
-        try:
-            allowed_positions_for_dblocks = sample(allowed_positions_for_dblocks, num_pieces)
-        except ValueError as e:
-            print e
-        
-        for piece in pieces:
-            # choose a place to put a piece
-            position = choice(allowed_positions_for_dblocks)
-            
-            # put the piece
-            self.__map[position] = piece
-            
-            # remove position from positions for dblocks
-            allowed_positions_for_dblocks.remove(position)
-    """
-    """
+    
     def has_ublock(self, row, col):
         pos = self.__convert_position(row, col)
         element = self.__map[pos]
-        return isinstance(element, int)
+        return element == 1
         
     def has_dblock(self, row, col):
         pos = self.__convert_position(row, col)
         element = self.__map[pos]
-        return isinstance(element, tuple) and element[0] != None
-        
-    def has_reward(self, row, col):
-        pos = self.__convert_position(row, col)
-        element = self.__map[pos]
-        return isinstance(element, tuple) and element[1] != None
-        
+        return element in [2, 21, 22, 23, 24, 25]
+    
     def has_nothing(self, row, col):
         pos = self.__convert_position(row, col)
         element = self.__map[pos]
-        return element == None
-        
-    def destroy_dblock(self, row, col):
-        if self.has_dblock(row, col):
-            pos = self.__convert_position(row, col)
-            if self.has_reward(row, col):
-                self.__map[pos] = (None, self.__map[pos][1])
-            else:
-                self.__map[pos] = None
-            
-    def destroy_reward(self, row, col):
-        if self.has_reward(row, col):
-            pos = self.__convert_position(row, col)
-            self.__map[pos] = None
-            
-    def get_reward(self, row, col):
-        if self.has_reward(row, col):
-            pos = self.__convert_position(row, col)
-            reward = self.__map[pos][1]
-            self.__map[pos] = None
-            return reward
-    """     
+        return element in [0]#, 11, 12, 13, 14, 15, 31, 32, 33, 34, 35, 36, 37]
+
     def element_at_position(self, row, col):
         i = self.__convert_position(row, col)
         return self.map[i]
