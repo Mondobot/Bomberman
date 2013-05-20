@@ -40,6 +40,7 @@ class LoginScreen(gui.App):
 		# Add object to the table and finish initializing the app
 		self._fill()
 		self.init(self.table, self.screen)
+		self.blur()
 
 	"""
 		Handles the login procedures
@@ -104,7 +105,7 @@ class LoginScreen(gui.App):
 		login_area.tr()
 		login_area.td(gui.Label("Password"), width = area_width, height = 30)
 		login_area.tr()
-		self.passwd = gui.Input(value = "", size = 8)
+		self.passwd = gui.Password(value = "", size = 8)
 		self.passwd.connect("activate", self._login)
 		login_area.td(self.passwd, width = area_width, height = 30)
 
