@@ -4,9 +4,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Map;
 
 public class Client extends Thread {
 
@@ -19,9 +17,10 @@ public class Client extends Thread {
 	public int pozX, pozY;
 	public int spawnX, spawnY;
 	public ArrayList<Bomba> bombs;
+	public final int gasit = 0;
 
 	public ArrayList<Integer> powerUp;
-	private String userName;
+	public String userName;
 	public int lives;
 	public int clientId;
 	private Server server;
@@ -46,29 +45,47 @@ public class Client extends Thread {
 
 	public void run() {
 		String message;
+		Update t = null;
 		while (true) {
 			try {
 				message = socketReader.readLine();
 				System.out.println(message);
-				/*if (authenticated == false) {
+				if (authenticated == false) {
 					if (message.charAt(0) == '0') {
 						handleClient(message);
+						t=new Update(server,this);
+					
+						t.start();
+					
 					} else {
 						continue;
 					}
-				}*/
+				}
 				if (message.charAt(0) == '1') {
 					createNewGame();
+					t.gasit=1;
 				} else if (message.charAt(0) == '2') {
 					joinGame(message);
+					t.gasit=1;
 				} else if (message.charAt(0) == '3') {
 					startGame();
+					
 				} else if (message.charAt(0) == '4') {
 					// 4 reprezinta mesaj de miscare
 					attemptMove(message);
 				} else if (message.charAt(0) == '5') {
 					// clientul doreste sa puna bomba la pozitia la care se afla
 					putBomb();
+				} else if (message.charAt(0) == '9') {
+					for (Client client : server.games.get(gameId).getClients()) {
+					    String messageAux=message.substring(1);
+					    message="9";
+					    message+=(char)this.userName.length();
+					    message+=this.userName;
+					    message+=(char)messageAux.length();
+					    message+=messageAux;
+						client.sendMessage(message);
+					}
 				}
 
 			} catch (IOException e) {
@@ -98,11 +115,14 @@ public class Client extends Thread {
 	boolean handleClient(String message) {
 		System.out.println(message);
 		String userName = getUserName(message);
+		this.userName=userName;
 		String passwd = getPasswd(message);
+		System.out.println(userName + " " + passwd);
 		// if handle client successfully set authenticated
 		if (server.clientExists(userName, passwd)) {
 			authenticated = true;
 			sendMessage("ok");
+			System.out.println("ok");
 		} else {
 			sendMessage("not ok");
 		}
@@ -118,9 +138,10 @@ public class Client extends Thread {
 	}
 
 	synchronized boolean createNewGame() {
+		sendOk(1);
 		server.createNewGame(this);
 		gameId = server.getSize();
-		sendOk(1);
+	
 		return true;
 	}
 
@@ -179,9 +200,9 @@ public class Client extends Thread {
 
 	boolean joinGame(String message) {
 		gameId = Integer.parseInt(message.substring(1, message.length()));
-		
-		server.joinGame(this, gameId);
 		sendOk(message.charAt(0));
+		server.joinGame(this, gameId);
+		
 		return true;
 	}
 
@@ -196,6 +217,7 @@ public class Client extends Thread {
 
 	boolean startGame() {
 		server.startGame(gameId);
+		
 		return true;
 	}
 
@@ -206,6 +228,10 @@ public class Client extends Thread {
 	void update() {
 		sendMessage(server.getGameWorld(this.gameId)
 				.stringifyMap(this.clientId));
+	}
+	
+	Server getServer() {
+		return server;
 	}
 	
 }

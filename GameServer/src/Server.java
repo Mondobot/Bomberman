@@ -26,7 +26,7 @@ import org.xml.sax.SAXException;
 public class Server extends Thread {
 
 	private static ServerSocket mSocketServer;
-	private static ArrayList<GameWorld> games;
+	public static ArrayList<GameWorld> games;
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 	private DocumentBuilderFactory factory;
 	private DocumentBuilder parser;
@@ -84,6 +84,8 @@ public class Server extends Thread {
 		games.add(newGame);
 		owner.clientId = 0;
 		newGame.addClient(owner);
+		
+		
 	}
 	
 	public void joinGame(Client client, int id) {
