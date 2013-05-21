@@ -136,7 +136,7 @@ public class Server extends Thread {
 	}
 	
 	public static void main(String args[]) {
-		Server s = new Server(25001);
+		Server s = new Server(25000);
 		s.start();
 	}
 }

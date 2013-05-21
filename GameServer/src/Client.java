@@ -200,7 +200,7 @@ public class Client extends Thread {
 
 	boolean joinGame(String message) {
 		gameId = Integer.parseInt(message.substring(1, message.length()));
-		sendOk(message.charAt(0));
+		sendOk(2);
 		server.joinGame(this, gameId);
 		
 		return true;
