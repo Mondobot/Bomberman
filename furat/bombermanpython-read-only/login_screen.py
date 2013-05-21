@@ -24,7 +24,7 @@ class LoginScreen(gui.App):
 		a login area
 	"""
 
-	def __init__(self, state, screen, **params):
+	def __init__(self, screen, **params):
 		# Init the app and connect the quit action
 		gui.App.__init__(self)
 
@@ -33,7 +33,6 @@ class LoginScreen(gui.App):
 		# Init the inner variables
 		self.width = params.get("width", 0)
 		self.height = params.get("height", 0)
-		self.state = state
 		self.screen = screen
 		self.table = gui.Table(**params)
 
@@ -58,7 +57,8 @@ class LoginScreen(gui.App):
 			ans = protocol.sendMessage(TYPE = protocol.LOGIN, USER = user, PASS = passwd)
 
 			if ans == True:
-				self.state.logged_in = True
+				state.logged_in = True
+				state.in_game_select = True
 				return
 
 			else:

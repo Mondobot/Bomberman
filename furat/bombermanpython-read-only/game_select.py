@@ -3,6 +3,8 @@ from pgu import gui
 import state
 import network
 from time import time
+import protocol
+
 
 class GameInfo(gui.Table):
 	def __init__(self, parent, gameID, **params):
@@ -78,7 +80,7 @@ class GameInfo(gui.Table):
 		self.labels[index].set_text(text)
 
 class GameSelect(gui.App):
-	def __init__(self, state, screen, **params):
+	def __init__(self, screen, **params):
 		gui.App.__init__(self)
 
 		self.connect(gui.QUIT, self.quit, None)
@@ -94,12 +96,24 @@ class GameSelect(gui.App):
 
 	def create(self):
 		print "create"
+		ok = protocol.sendMessage(TYPE = protocol.CREATE)
+
+		if ok:
+			state.in_game_select = False
+			state.in_game_lobby = True
 
 	def join(self):
 		if self.selection:
 			print "join"
+			ok = protocol.sendMessage(TYPE = protocol.JOIN,
+									ID = self.selection.gameID)
+
+			if ok:
+				state.in_game_select = False
+				state.in_game_lobby = True
 
 	def _addGame(self, game):
+		print "Am adaugat unul"
 		id, name, players = game
 
 		entry_h = int(self.height * 0.05)
@@ -107,7 +121,6 @@ class GameSelect(gui.App):
 
 		entry = GameInfo(self, id, width = entry_w, height = entry_h)
 		entry.setLabelAt(0, name)
-		#entry.setLabelAt(1, "                                                   ")
 		entry.setLabelAt(2, str(players) + " / 4")
 		entry.enableSelect()
 
@@ -115,9 +128,22 @@ class GameSelect(gui.App):
 		self.entry_table.td(entry, width = entry_w, height = entry_h)
 		self.games += [entry]
 
+		for entr in self.games:
+			#pass
+			#entr.resize()
+			entr.repaint()
+
+		self.entry_table.resize()
+		self.entry_table.repaint()
+
 	def updateGames(self, games):
+		if not self.ok:
+			return
+
 		my_games = self.games[:]
 		new = []
+
+		print "ceva ", len(self.games)
 
 		for entry in games:
 			found = False
@@ -132,10 +158,13 @@ class GameSelect(gui.App):
 			if not found:
 				self._addGame(entry)
 
+		"""
 		for x in my_games:
 			if x not in new:
 				self.entry_table.remove(x)
 				del self.games[self.games.index(x)]
+		"""
+		#self.repaint()
 
 	def _fill_splash(self, w, h):
 		button_h = int(h * 0.05)
@@ -202,22 +231,9 @@ class GameSelect(gui.App):
 		
 		table.td(lobby, width = int(self.width / 4) * 3, height = self.height)
 		table.td(splash, width = int(self.width / 4), height = self.height)
-
-		self._addGame((2, "asdasdasdasdasd", 3))
-		self._addGame((3, "gigel", 3))
-		self.updateGames([(3, "gigel", 5)])
-		self._addGame((2, "gigel", 3))
-		self._addGame((2, "gigel", 3))
-
-		self.cont.set_horizontal_scroll(50)
-
-		self.run(table)
-
+		self.init(table, self.screen)
+		self.ok = True
 
 	def paint(self, s):
 		self.screen.blit(self.bg, self.bg_rect)
 		super(GameSelect, self).paint(s)
-
-
-ceva = GameSelect(None, None, width = 800, height = 600)
-

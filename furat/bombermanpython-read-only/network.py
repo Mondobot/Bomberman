@@ -9,7 +9,7 @@ class _NetworkModule():
 	def __init__(self):
 		self.status = False
 		self.error = ["", ""]
-		self.sv_ip = '192.168.15.182'
+		self.sv_ip = '192.168.0.154'
 		self.sv_port = 25001
 
 	"""
@@ -78,7 +78,7 @@ class _NetworkModule():
 			print "cannot recv"
 			return ""
 
-#		print reply
+		print reply
 		return reply
 
 	def recvSelect(self):

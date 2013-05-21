@@ -8,6 +8,7 @@
 import pygame
 from world import PygameWorld
 from login_screen import LoginScreen
+from game_select import GameSelect
 from pgu import gui
 import state
 import network
@@ -46,25 +47,16 @@ done = False
 
 
 world = PygameWorld(screen)
-#login_screen = gui.App(width = WIDTH, height = HEIGHT)
-#login_screen.connect(gui.QUIT, login_screen.quit, None)
-#login_screen.init(LoginScreen(statea, screen, width = WIDTH, height = HEIGHT), screen)
-login_screen = LoginScreen(state, screen, width = WIDTH, height = HEIGHT)
+login_screen = LoginScreen(screen, width = WIDTH, height = HEIGHT)
+game_select_screen = GameSelect(screen, width = WIDTH, height = HEIGHT)
 
-#login_screen.run(LoginScreen(statea, screen, width = WIDTH, height = HEIGHT))
+owner = None
 
 # -------- Main Program Loop -----------
-network.connect()
-protocol.sendMessage(TYPE = CREATE)
-time.sleep(3)
-protocol.sendMessage(TYPE = START)
-
 while not done:
     for event in pygame.event.get(): # User did something
-        print "state.in_game ", state.in_game
         if event.type == pygame.QUIT: # If user clicked close
             done = True # Flag that we are done so we exit this loop
-
 
         elif state.in_game == True and event.type == pygame.KEYUP:
             if not world.players[world.me].walking:
@@ -79,32 +71,44 @@ while not done:
                  elif event.key == pygame.K_b:
                     protocol.sendMessage(TYPE = DROP)
 
-        else:
+        elif not state.logged_in:
             login_screen.event(event)
-                
-    # make things happen
-    protocol.recvMessage(world)
-    if state.logged_in == False and state.in_game == True:
-        print "ruleaza"
-        world.run()
-    
-    # Set the screen background
-        screen.fill( GREY )
-    
-    # draw world
-        world.draw()
-    
 
-    #else:
-     #   login_screen.update()
-        
+        elif state.in_game_select:
+            game_select_screen.event(event)
+
+    # make things happen
+
+    if not state.logged_in:
+        login_screen.update()
+
+    elif state.in_game_select:
+        game_select_screen.update()
+
+    elif state.in_game:
+        world.run()
+        # Set the screen background
+        screen.fill(GREY)
+        # draw world
+        world.draw()
+
     # Limit to 20 frames per second
     clock.tick( FPS )
- 
+
     # Go ahead and update the screen with what we've drawn.
     pygame.display.flip()
-	
-	
+
+    if not state.logged_in and owner != login_screen:
+        owner = login_screen
+
+    elif state.in_game_select and owner != game_select_screen:
+        owner = game_select_screen
+
+    elif state.in_game and owner != world:
+        owner = world
+
+    protocol.recvMessage(owner)
+
 # Be IDLE friendly. If you forget this line, the program will 'hang'
 # on exit.
 pygame.quit()
