@@ -107,7 +107,7 @@ while not done:
     elif state.in_game and owner != world:
         owner = world
 
-    protocol.recvMessage(owner)
+    protocol.recvMessage(world, game_select_screen)
 
 # Be IDLE friendly. If you forget this line, the program will 'hang'
 # on exit.

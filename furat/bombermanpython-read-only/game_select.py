@@ -23,7 +23,6 @@ class GameInfo(gui.Table):
 		self.max_players = 4
 
 		self.labels = []
-
 		self._fill()
 
 	def enableSelect(self):
@@ -87,9 +86,11 @@ class GameSelect(gui.App):
 
 		self.games = []
 		self.selection = None
+		self.count = 0
 
 		self.width = params.get("width", 0)
 		self.height = params.get("height", 0)
+		self.entry_table = gui.Table(width = int(self.width / 4) * 3)
 
 		self._fill()
 
@@ -112,29 +113,24 @@ class GameSelect(gui.App):
 				state.in_game_select = False
 				state.in_game_lobby = True
 
-	def _addGame(self, game):
+	def addGame(self, game):
 		print "Am adaugat unul"
-		id, name, players = game
+		game_id, name, players = game
 
 		entry_h = int(self.height * 0.05)
 		entry_w = int(self.width / 4) * 3
 
-		entry = GameInfo(self, id, width = entry_w, height = entry_h)
+		entry = GameInfo(self, game_id, width = entry_w, height = entry_h)
 		entry.setLabelAt(0, name)
-		entry.setLabelAt(2, str(players) + " / 4")
-		entry.enableSelect()
+		
+		if game_id != -3:
+			entry.setLabelAt(2, str(players) + " / 4")
+			entry.enableSelect()
 
 		self.entry_table.tr()
 		self.entry_table.td(entry, width = entry_w, height = entry_h)
 		self.games += [entry]
-
-		for entr in self.games:
-			#pass
-			#entr.resize()
-			entr.repaint()
-
-		self.entry_table.resize()
-		self.entry_table.repaint()
+		self.entry_table.tr()
 
 	def updateGames(self, games):
 		if not self.ok:
@@ -142,8 +138,6 @@ class GameSelect(gui.App):
 
 		my_games = self.games[:]
 		new = []
-
-		print "ceva ", len(self.games)
 
 		for entry in games:
 			found = False
@@ -154,17 +148,17 @@ class GameSelect(gui.App):
 					my_entry.setLabelAt(2, str(players) + " / 4")
 					new += [my_entry]
 					found = True
-
+					break
+			
 			if not found:
-				self._addGame(entry)
+				self.addGame(entry)
 
-		"""
 		for x in my_games:
 			if x not in new:
 				self.entry_table.remove(x)
 				del self.games[self.games.index(x)]
-		"""
-		#self.repaint()
+
+		self.entry_table.chsize()
 
 	def _fill_splash(self, w, h):
 		button_h = int(h * 0.05)
@@ -209,7 +203,6 @@ class GameSelect(gui.App):
 		table.td(header, width = w, height = entry_h)
 
 		table.tr()
-		self.entry_table = gui.Table(width = w)
 		self.cont = gui.ScrollArea(self.entry_table, width = w,
 							height = entry_h * 18,
 							hscrollbar = False)
@@ -232,6 +225,7 @@ class GameSelect(gui.App):
 		table.td(lobby, width = int(self.width / 4) * 3, height = self.height)
 		table.td(splash, width = int(self.width / 4), height = self.height)
 		self.init(table, self.screen)
+		print "acum e ok"
 		self.ok = True
 
 	def paint(self, s):

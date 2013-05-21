@@ -1,5 +1,7 @@
 import network
 import state
+import game_select
+import world
 NONE = "-1"
 LOGIN = "0"
 CREATE = "1"
@@ -8,9 +10,9 @@ START = "3"
 MOVE = "4"
 DROP = "5"
 MAP = "6"
+GAMES_LIST = "7"
 
 class _ProtocolsModule():
-
 
 	def __init__(self):
 		pass
@@ -25,10 +27,11 @@ class _ProtocolsModule():
 			self._sendStart()
 
 		elif msg_type == CREATE:
-			self._sendCreate()
+			return self._sendCreate()
 
 		elif msg_type == JOIN:
-			self._sendJoin()
+			game_id = params.get("ID", 0)
+			return self._sendJoin(game_id)
 
 		elif msg_type == MOVE:
 			new_dir = params.get("DIR", 0)
@@ -40,7 +43,7 @@ class _ProtocolsModule():
 		else:
 			print "ce plm de mesaj e " + msg_type
 
-	def recvMessage(self, world):
+	def recvMessage(self, world, lobby):
 		if not network.isConnected():
 			network.connect()
 
@@ -58,9 +61,10 @@ class _ProtocolsModule():
 			self._handleMapRecv(message[1:], world)
 
 		elif msg_type == START:
-			print "Primesc start"
 			state.in_game = True
 
+		elif msg_type == GAMES_LIST:
+			self._handleGamesList(message[1:], lobby)
 
 	def _handleLogin(self, **params):
 		user = params.get("USER")
@@ -97,41 +101,61 @@ class _ProtocolsModule():
 		aux = map(ord, codedMap[head : head + no_clients * 2])
 		players_pos = []
 
-		for i in range(0, no_clients, 2):
+		for i in range(0, no_clients * 2, 2):
 			players_pos += [(aux[i], aux[i + 1])]
-
-		print "Players: ", players_pos
 
 		world.setPlayers(client_id, players_pos)
 
 		# Populate the bombs
 		head += no_clients * 2
 		no_bombs = ord(codedMap[head])
-		print "bombs ", no_bombs
 
 		world.clearBombs()
 		head += 1
 		bombs_pos = []
 		aux = map(ord, codedMap[head : head + no_bombs * 2])
-		print "bombs: ", aux
 
 		for i in range(0, no_bombs * 2, 2):
 			world.place_bomb((aux[i], aux[i + 1]), 1, 20)
 
 		head += no_bombs * 2
 		no_expl = ord(codedMap[head])
-		print "no_expl ", no_expl
 
 		head += 1
 
 		aux = map(ord, codedMap[head : head + no_expl * 4 + 2])
 
-		print aux
 		for i in range(0, no_expl * 4, 4):
 			world.place_bomb((aux[i], aux[i + 1]), 3, aux[i + 3])
 			index = world.getNoBombs()
 
 			world.expl_bomb((aux[i], aux[i + 1]), aux[i + 3])
+
+	def _handleGamesList(self, message, game_select):
+		head = 0
+
+		no_games = ord(message[head])
+		head += 1
+
+		games = []
+
+		for i in range(0, no_games):
+			id = ord(message[head])
+
+			head += 1
+			name_len = ord(message[head])
+
+			head += 1
+			game_name = message[head : head + name_len]
+
+			head += name_len
+			no_players = ord(message[head])
+
+			games += [(id, game_name, no_players)]
+
+			head += 1
+
+		game_select.updateGames(games)
 
 	def _sendStart(self):
 		network.send(START)
@@ -145,12 +169,17 @@ class _ProtocolsModule():
 		network.send(CREATE)
 		if not self._getAck(CREATE):
 			print "PLM, NU MERGE CREAT"
+			return False
 
+		return True
 
-	def _sendJoin(self):
-		network.send(JOIN + "0")
+	def _sendJoin(self, game_id):
+		network.send(JOIN + str(game_id))
 		if not self._getAck(JOIN):
 			print "PLM, NU MERGE JOIN"
+			return False
+
+		return True
 
 	def _getAck(self, msg_type):
 		msg = network.recv()

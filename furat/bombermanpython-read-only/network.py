@@ -9,8 +9,8 @@ class _NetworkModule():
 	def __init__(self):
 		self.status = False
 		self.error = ["", ""]
-		self.sv_ip = '192.168.0.154'
-		self.sv_port = 25001
+		self.sv_ip = '127.0.0.1'
+		self.sv_port = 25000
 
 	"""
 		Attempts a connection and in case of failure sets
