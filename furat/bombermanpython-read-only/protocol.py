@@ -31,7 +31,7 @@ class _ProtocolsModule():
 
 		elif msg_type == JOIN:
 			game_id = params.get("ID", 0)
-			return self._sendJoin(0)
+			return self._sendJoin(game_id)
 
 		elif msg_type == MOVE:
 			new_dir = params.get("DIR", 0)
