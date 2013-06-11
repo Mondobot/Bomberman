@@ -49,7 +49,7 @@ public class Client extends Thread {
 		while (true) {
 			try {
 				message = socketReader.readLine();
-				System.out.println(message);
+				//System.out.println(message);
 				if (authenticated == false) {
 					if (message.charAt(0) == '0') {
 						handleClient(message);
@@ -193,7 +193,7 @@ public class Client extends Thread {
 			}
 		}
 		// inseamna ca se poate muta acolo
-		System.out.println(pozX+" "+pozY+" "+newPozx+" "+newPozy);
+		//System.out.println(pozX+" "+pozY+" "+newPozx+" "+newPozy);
 		pozX = newPozx;
 		pozY = newPozy;
 	}
@@ -201,6 +201,7 @@ public class Client extends Thread {
 	boolean joinGame(String message) {
 		gameId = Integer.parseInt(message.substring(1, message.length()));
 		sendOk(2);
+		System.out.println(gameId);
 		server.joinGame(this, gameId);
 		
 		return true;
@@ -217,7 +218,6 @@ public class Client extends Thread {
 
 	boolean startGame() {
 		server.startGame(gameId);
-		
 		return true;
 	}
 
