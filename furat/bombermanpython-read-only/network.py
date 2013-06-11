@@ -78,7 +78,7 @@ class _NetworkModule():
 			print "cannot recv"
 			return ""
 
-		print reply
+		#print reply
 		return reply
 
 	def recvSelect(self):

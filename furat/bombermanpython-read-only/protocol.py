@@ -31,7 +31,7 @@ class _ProtocolsModule():
 
 		elif msg_type == JOIN:
 			game_id = params.get("ID", 0)
-			return self._sendJoin(game_id)
+			return self._sendJoin(0)
 
 		elif msg_type == MOVE:
 			new_dir = params.get("DIR", 0)
@@ -62,6 +62,7 @@ class _ProtocolsModule():
 
 		elif msg_type == START:
 			state.in_game = True
+			state.in_game_lobby = False
 
 		elif msg_type == GAMES_LIST:
 			self._handleGamesList(message[1:], lobby)
@@ -142,6 +143,8 @@ class _ProtocolsModule():
 		for i in range(0, no_games):
 			id = ord(message[head])
 
+			print "GAME_ID ", id
+
 			head += 1
 			name_len = ord(message[head])
 
@@ -164,6 +167,7 @@ class _ProtocolsModule():
 
 		else:
 			state.in_game = True
+			state.in_game_lobby = False
 
 	def _sendCreate(self):
 		network.send(CREATE)
@@ -175,6 +179,7 @@ class _ProtocolsModule():
 
 	def _sendJoin(self, game_id):
 		network.send(JOIN + str(game_id))
+		print "JOIN ", game_id
 		if not self._getAck(JOIN):
 			print "PLM, NU MERGE JOIN"
 			return False

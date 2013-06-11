@@ -4,10 +4,11 @@ class _State():
 		self.in_game = False
 		self.in_game_select = False
 		self.in_game_lobby = False
-		self.ntw_owner = None
+		self.game_owner = False
 
 _inst = _State()
 logged_in = _inst.logged_in
 in_game = _inst.in_game
 in_game_select = _inst.in_game_select
 in_game_lobby = _inst.in_game_lobby
+game_owner = _inst.game_owner

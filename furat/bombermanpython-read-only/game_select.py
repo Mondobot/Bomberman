@@ -44,6 +44,7 @@ class GameInfo(gui.Table):
 		timestamp = time()
 
 		if timestamp - self._timestamp < 0.25:
+			self.doSelect()
 			self._parent.join()
 			print "double"
 
@@ -94,14 +95,15 @@ class GameSelect(gui.App):
 
 		self._fill()
 
-
 	def create(self):
-		print "create"
 		ok = protocol.sendMessage(TYPE = protocol.CREATE)
 
 		if ok:
 			state.in_game_select = False
 			state.in_game_lobby = True
+			state.game_owner = True
+
+		print "game_ownerrr ", state.game_owner
 
 	def join(self):
 		if self.selection:
@@ -112,6 +114,7 @@ class GameSelect(gui.App):
 			if ok:
 				state.in_game_select = False
 				state.in_game_lobby = True
+				state.game_owner = False
 
 	def addGame(self, game):
 		print "Am adaugat unul"

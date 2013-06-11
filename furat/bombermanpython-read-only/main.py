@@ -9,6 +9,7 @@ import pygame
 from world import PygameWorld
 from login_screen import LoginScreen
 from game_select import GameSelect
+from game_room import GameRoom
 from pgu import gui
 import state
 import network
@@ -49,11 +50,14 @@ done = False
 world = PygameWorld(screen)
 login_screen = LoginScreen(screen, width = WIDTH, height = HEIGHT)
 game_select_screen = GameSelect(screen, width = WIDTH, height = HEIGHT)
-
+game_lobby_screen = None
 owner = None
+
 
 # -------- Main Program Loop -----------
 while not done:
+
+    
     for event in pygame.event.get(): # User did something
         if event.type == pygame.QUIT: # If user clicked close
             done = True # Flag that we are done so we exit this loop
@@ -77,6 +81,9 @@ while not done:
         elif state.in_game_select:
             game_select_screen.event(event)
 
+        elif state.in_game_lobby:
+            game_lobby_screen.event(event)
+
     # make things happen
 
     if not state.logged_in:
@@ -84,6 +91,12 @@ while not done:
 
     elif state.in_game_select:
         game_select_screen.update()
+
+    elif state.in_game_lobby:
+        if game_lobby_screen == None:
+            game_lobby_screen = GameRoom(screen, width = WIDTH, height = HEIGHT)
+
+        game_lobby_screen.update()
 
     elif state.in_game:
         world.run()
@@ -103,6 +116,9 @@ while not done:
 
     elif state.in_game_select and owner != game_select_screen:
         owner = game_select_screen
+
+    elif state.in_game_lobby and owner != game_lobby_screen:
+        owner = game_lobby_screen
 
     elif state.in_game and owner != world:
         owner = world
